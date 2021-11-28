@@ -19,11 +19,13 @@ class SS : Thread() {
         fun main(args: Array<String>) {
             //SS().start()
             val chain = BlockChain()
-            chain.addBlock(System.currentTimeMillis(), "Jopa")
-            chain.addBlock(System.currentTimeMillis(), "Ford")
-            chain.addBlock(System.currentTimeMillis(), "Skoda")
-            chain.addBlock(System.currentTimeMillis(), "Jopa")
-            chain.verifyChain()
+            chain.addBlock("Jopa")
+            chain.addBlock("Ford")
+            chain.addBlock("Skoda")
+            chain.addBlock("Jopa")
+            chain.addBlock("Nissa")
+            chain.addBlock("Opel")
+            chain.verify()
         }
     }
 }

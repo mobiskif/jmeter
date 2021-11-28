@@ -2,46 +2,42 @@ import java.security.MessageDigest
 import java.util.*
 
 class BlockChain {
-    private val blockChain: MutableList<Block> = mutableListOf()
+    private val chain: MutableList<Block> = mutableListOf()
+    private var complexity = 2 //динамически изменяется под minigtime
+    private val maxminitime = 400 //задает сложность майнинга
 
-    fun getHash(ts:Long, dat:String, prvHash:String, nonce:Int): String {
-        var md = MessageDigest.getInstance("SHA-256")
-        var istr = ts.toString()+dat+prvHash+nonce
-        var input = istr.toByteArray()
-        var bytes = md.digest(input)
-        var str = Base64.getEncoder().encodeToString(bytes)
-        return str
+    private fun getHash(timestamp: Long, data: String, hashstr: String, nonce: Int): String {
+        val datastr = data + timestamp + hashstr + nonce
+        val hashbytes = MessageDigest.getInstance("SHA-256").digest(datastr.toByteArray())
+        return Base64.getEncoder().encodeToString(hashbytes)
     }
 
-    fun addBlock(ts: Long, dat: String) {
-        val t1 = System.currentTimeMillis()
+    fun addBlock(data: String) {
+        val timestamp = System.currentTimeMillis()
         var nonce = 0
-        val prvHash = blockChain.get(blockChain.size-1).hash
         while (true) {
-            val newHash = getHash(ts, dat, prvHash, nonce)
-            if (newHash.startsWith("0".repeat(3))) {
-                //println("Ношол!!!: $nonce, $newHash")
-                blockChain.add(Block(ts, dat, newHash, nonce))
+            val hash = getHash(timestamp, data, chain[chain.size - 1].hash, nonce) //берем предыдущий хэш (защита от подделок)
+            if (hash.startsWith("0".repeat(complexity))) {
+                chain.add(Block(timestamp, data, hash, nonce))
                 break
-            }
-            else nonce++
+            } else nonce++ //повторять, пока не выпадет нужное кол-во нулей (сложность)
         }
-        val t2 = System.currentTimeMillis()
-        println((t2-t1).toString() +" ms")
+        val minigtime = System.currentTimeMillis() - timestamp
+        println("$minigtime ms, $complexity")
+        if (minigtime < maxminitime - 200) complexity++
+        else if (minigtime > maxminitime + 100) complexity-- //complexity подстраивается под заданную сложность
     }
 
-    fun verifyChain() {
-        for (i in 1 until blockChain.size) {
-            var check = "Error"
-            val verHash = getHash(blockChain.get(i).timestamp, blockChain.get(i).data, blockChain.get(i - 1).hash, blockChain.get(i).nonce)
-            if (blockChain.get(i).hash.equals(verHash)) check = "Pass"
-            println("${blockChain.get(i).data}\t ${blockChain.get(i).hash}\t ${blockChain.get(i).nonce}\t $check")
+    fun verify() {
+        for (i in 1 until chain.size) {
+            var check = "Error!!"
+            val verHash = getHash(chain[i].timestamp, chain[i].data, chain[i - 1].hash, chain[i].nonce)
+            if (chain[i].hash == verHash) check = "Pass"
+            println("${chain[i].data}\t ${chain[i].hash}\t ${chain[i].nonce}\t $check")
         }
     }
 
     init {
-        val tm = System.currentTimeMillis()
-        val hsh = getHash(tm, "Root", "",0)
-        blockChain.add(Block(tm, "Root", hsh, 0))
+        chain.add(Block(System.currentTimeMillis(), "Root", "", complexity))
     }
 }

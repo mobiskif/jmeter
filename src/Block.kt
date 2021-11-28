@@ -1,6 +1,6 @@
-class Block(ts:Long, dat:String, hs:String, nc:Int) {
-    val timestamp = ts
-    val data = dat
-    val hash = hs
-    val nonce = nc
+class Block(imestamp:Long, data:String, hash:String, nonce:Int) {
+    val timestamp = imestamp
+    val data = data
+    val hash = hash
+    val nonce = nonce
 }
