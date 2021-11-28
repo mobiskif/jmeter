@@ -11,6 +11,8 @@ class Utils{
         @JvmStatic
         var tf: DateFormat = SimpleDateFormat("HH:mm:ss")
         @JvmStatic
+        var bdf: DateFormat = SimpleDateFormat("dd.MM.YYYY HH:mm:ss.ms")
+        @JvmStatic
         public var port = 9510
         @JvmStatic
         var host = "92.100.199.33"
@@ -32,7 +34,7 @@ class Utils{
 
         @JvmStatic
         fun date(): String {
-            return df.format(Date().time)
+            return bdf.format(Date().time)
         }
 
     }

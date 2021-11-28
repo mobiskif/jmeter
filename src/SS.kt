@@ -17,7 +17,13 @@ class SS : Thread() {
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            SS().start()
+            //SS().start()
+            val chain = BlockChain()
+            chain.addBlock(System.currentTimeMillis(), "Jopa")
+            chain.addBlock(System.currentTimeMillis(), "Ford")
+            chain.addBlock(System.currentTimeMillis(), "Skoda")
+            chain.addBlock(System.currentTimeMillis(), "Jopa")
+            chain.verifyChain()
         }
     }
 }
