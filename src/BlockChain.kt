@@ -4,7 +4,7 @@ import java.util.*
 class BlockChain {
     private val chain: MutableList<Block> = mutableListOf()
     private var complexity = 2 //динамически изменяется под minigtime
-    private val maxminitime = 350 //задает сложность майнинга
+    private val maxminingtime = 400 //задает сложность майнинга
 
     private fun getHash(timestamp: Long, data: String, hashstr: String, nonce: Int): String {
         val datastr = data + timestamp + hashstr + nonce
@@ -22,10 +22,10 @@ class BlockChain {
                 break
             } else nonce++ //повторять, пока не выпадет нужное кол-во нулей (сложность)
         }
-        val minigtime = System.currentTimeMillis() - timestamp
-        println("$minigtime ms, $complexity")
-        if (minigtime < maxminitime - 200) complexity++
-        else if (minigtime > maxminitime + 100) complexity-- //complexity подстраивается под заданную сложность
+        val miningtime = System.currentTimeMillis() - timestamp
+        println("$miningtime ms, $complexity")
+        if (miningtime < maxminingtime - 200) complexity++
+        else if (miningtime > maxminingtime + 100) complexity-- //complexity подстраивается под заданную сложность
     }
 
     fun verify() {
